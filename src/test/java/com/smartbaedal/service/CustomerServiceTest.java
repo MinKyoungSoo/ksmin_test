@@ -1,6 +1,6 @@
 package com.smartbaedal.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.smartbaedal.DemosuperApplication;
 import com.smartbaedal.domain.Customer;
@@ -22,9 +22,12 @@ public class CustomerServiceTest {
     @Autowired
     CustomerService customerService;
 
+    Customer newCustomer;
+
     @Before
     public void setUp() throws Exception {
-
+        Customer customer = new Customer(null, "강", "현구");
+        this.newCustomer = customerService.create(customer);
     }
 
     @After
@@ -33,9 +36,19 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void testCustomerCreate(){
-        Customer customer = new Customer(null, "강", "현구");
-        Customer newCustomer = customerService.create(customer);
-        assertEquals(new Customer(1L, "강", "현구"), newCustomer);
+    public void testCustomerCreate() {
+        Customer created;
+        created = customerService.create(new Customer(null, "민", "경수"));
+        assertEquals(
+                new Customer(this.newCustomer.getId() + 1, "민", "경수"),
+                created);
     }
+
+    @Test
+    public void testCustomerRead() {
+        Long id = this.newCustomer.getId();
+        Customer readed = customerService.read(id);
+        assertEquals(new Customer(id, "강", "현구"), readed);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.smartbaedal.domain;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -8,7 +10,7 @@ import org.junit.Test;
 public class CustomerTest {
 
     @Test
-    public void testFirst(){
+    public void testFirst() {
         Customer customer = new Customer(null, "민", "경수");
         assertEquals(customer, new Customer(null, "민", "경수"));
     }

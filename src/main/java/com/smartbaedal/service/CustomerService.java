@@ -17,4 +17,9 @@ public class CustomerService {
     public Customer create(Customer customer) {
         return customerRepository.save(customer);
     }
+
+    public Customer read(long id) {
+        Customer readed = customerRepository.findOne(id);
+        return readed;
+    }
 }
