@@ -5,11 +5,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woowahan.SpringBootDemoApplication;
 import com.woowahan.demo.domain.Customer;
 import com.woowahan.demo.service.CustomerService;
@@ -70,8 +73,7 @@ public class CustomerControllerTest {
 
     @Test
     public void test_목업_기본동작_체크() throws Exception {
-        mockMvc.perform(get("/customers"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/customers")).andExpect(status().isOk());
     }
 
     /**
@@ -97,6 +99,47 @@ public class CustomerControllerTest {
                 .andExpect(jsonPath("$.firstName", is(any(String.class))))
                 .andDo(MockMvcResultHandlers.print());
 
+    }
+
+    /**
+     * TODO : 고객등록
+     * TODO : 등록된 고객의 정보를 체크
+     */
+    @Test
+    public void test_고객_등록() throws Exception {
+        Customer customer = new Customer(null, "최", "인화");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonCustomer = objectMapper.writeValueAsString(customer);
+
+        System.out.println(jsonCustomer);
+
+        mockMvc.perform(post("/customers")
+                    .content(jsonCustomer)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.firstName", is(customer.getFirstName())));
+    }
+
+    /**
+     * TODO : 고객 정보 수정(고객 등록 포함)
+     */
+    @Test
+    public void test_고객_수정() throws Exception {
+        Customer customer = new Customer(null, "손", "현태");
+        Customer createdCustomer = customerService.create(customer);
+        Customer updatedCustomer = new Customer(null, "민", "경수");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonCustomer = objectMapper.writeValueAsString(updatedCustomer);
+
+        mockMvc.perform(put("/customers/" + createdCustomer.getId())
+                    .content(jsonCustomer)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(jsonPath("$.firstName", is(updatedCustomer.getFirstName())));
     }
 
 }
