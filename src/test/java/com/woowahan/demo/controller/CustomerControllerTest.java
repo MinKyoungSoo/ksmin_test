@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -26,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -140,6 +143,28 @@ public class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.firstName", is(updatedCustomer.getFirstName())));
+    }
+
+    /**
+     * TODO : 고객정보 삭제
+     */
+    @Test
+    public void test_고객_삭제() throws Exception {
+
+        //given
+        Customer customer = new Customer(null, "김", "민창");
+        Customer createCustomer = customerService.create(customer);
+
+        assertEquals("김", customer.getFirstName());
+
+        Long createId = createCustomer.getId();
+
+        //when
+        ResultActions resultActions = mockMvc.perform(delete("/customers/" + createId));
+
+        //then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
     }
 
 }

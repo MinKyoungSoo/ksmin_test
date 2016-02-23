@@ -3,10 +3,12 @@ package com.woowahan.demo.controller;
 import com.woowahan.demo.domain.Customer;
 import com.woowahan.demo.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -37,6 +39,12 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.POST)
     public Customer setCustomer(@RequestBody Customer customer) {
         return customerService.create(customer);
+    }
+
+    @RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCustomer(@PathVariable Long id) {
+        customerService.delete2(id);
     }
 
 
